@@ -1,2 +1,2 @@
 # examples
-Example of codes.
+Examples of codes.
