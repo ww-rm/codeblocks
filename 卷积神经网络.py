@@ -77,14 +77,14 @@ def collate_fn(data):
 
 
 def eval_metrics(y_true, y_pred):
-    """获得指标结果"""
+    """(acc, f1, p, r, report)"""
     acc = accuracy_score(y_true, y_pred)
     p = precision_score(y_true, y_pred, average="macro")
     r = recall_score(y_true, y_pred, average="macro")
     f1 = f1_score(y_true, y_pred, average="macro")
     report = classification_report(y_true, y_pred, digits=4)
 
-    return (acc, p, r, f1, report)
+    return (acc, f1, p, r, report)
 
 # %%
 
@@ -175,8 +175,8 @@ if __name__ == "__main__":
         *evaluate_metrics, _ = evaluate(model, test_dataloader, loss_fn)
         print("Train Loss: {:.4f} Acc: {:.4f} F1: {:.4f}({:.4f}/{:.4f})".format(*train_metrics))
         print("Eval  Loss: {:.4f} Acc: {:.4f} F1: {:.4f}({:.4f}/{:.4f})".format(*evaluate_metrics))
-        if best_f1 < evaluate_metrics[3]:
-            best_f1 = evaluate_metrics[3]
+        if best_f1 < evaluate_metrics[2]:
+            best_f1 = evaluate_metrics[2]
             torch.save(model.state_dict(), "./data/model/cnn.pt")
 
     print("Done!")
