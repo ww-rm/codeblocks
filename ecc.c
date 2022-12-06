@@ -82,14 +82,14 @@ void addpt(
 
         if (pt1->x == pt2->x)
         {
-            // 零元
+            // 脕茫脭陋
             if (pt1->y + pt2->y == ec->p)
             {
                 new_pt->x = -1;
                 new_pt->y = -1;
                 return;
             }
-            // 相同
+            // 脧脿脥卢
             else if (pt1->y == pt2->y)
             {
                 lambda = (3 * pt1->x * pt1->x + ec->a) * inverse(2 * pt1->y, ec->p);
@@ -99,7 +99,7 @@ void addpt(
                 exit(-1);
             }
         }
-        // 不同
+        // 虏禄脥卢
         else
         {
             int64_t delta_x = 0;
@@ -306,7 +306,7 @@ int main()
     ECDLP ecdlp = { { 2, 11, 49177 }, {{1, 14445}, 49031} };
     print_points(&ecdlp.ec);
 
-    printf("Curve Params: { a = % lld, b = % lld, p = % lld }\n", ecdlp.ec.a, ecdlp.ec.b, ecdlp.ec.p);
+    printf("Curve Params: { a = %lld, b = %lld, p = %lld }\n", ecdlp.ec.a, ecdlp.ec.b, ecdlp.ec.p);
     printf("GenPoint: { pt: (%lld, %lld), n: %lld }\n", ecdlp.genpt.pt.x, ecdlp.genpt.pt.y, ecdlp.genpt.n);
 
     int64_t prikey = 149;
