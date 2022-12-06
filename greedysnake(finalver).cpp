@@ -10,37 +10,37 @@
 #define RIGHT 77
 #define DOWN 80
 
-HANDLE screen_out = GetStdHandle(STD_OUTPUT_HANDLE); //»ñÈ¡±ê×¼Êä³öÌ¨
-CONSOLE_CURSOR_INFO cursor_info = {25, 0};           //¹â±êĞÅÏ¢
-COORD position = {0, 0};                             //¹â±êÎ»ÖÃ
+HANDLE screen_out = GetStdHandle(STD_OUTPUT_HANDLE); //è·å–æ ‡å‡†è¾“å‡ºå°
+CONSOLE_CURSOR_INFO cursor_info = {25, 0};           //å…‰æ ‡ä¿¡æ¯
+COORD position = {0, 0};                             //å…‰æ ‡ä½ç½®
 
-int COLUMN = 30; //ÇøÓòĞĞÊı
-int ROW = 25;    //ÇøÓòÁĞÊı
+int COLUMN = 30; //åŒºåŸŸè¡Œæ•°
+int ROW = 25;    //åŒºåŸŸåˆ—æ•°
 
-int RAW_X = 16; //ÓÎÏ·ÇøÓòÆ«ÒÆÁ¿
+int RAW_X = 16; //æ¸¸æˆåŒºåŸŸåç§»é‡
 int RAW_Y = 1;  //
 
-struct SnakeBody //ÉßÉí
+struct SnakeBody //è›‡èº«
 {
-    int x;           //×ø±ê
+    int x;           //åæ ‡
     int y;           //
-    SnakeBody *last; //ÉÏÒ»¸ö
-    SnakeBody *next; //ÏÂÒ»¸ö
+    SnakeBody *last; //ä¸Šä¸€ä¸ª
+    SnakeBody *next; //ä¸‹ä¸€ä¸ª
 };
 
-struct SnakeHead //ÉßÍ·
+struct SnakeHead //è›‡å¤´
 {
-    int x;           //×ø±ê
+    int x;           //åæ ‡
     int y;           //
-    int direction;   //Ç°½ø·½Ïò
-    int speed;       //Ç°½øËÙ¶È
-    int length;      //³¤¶È£¬°üÀ¨Í·
-    int score;       //µÃ·Ö
-    SnakeBody *next; //ÉßÉí
+    int direction;   //å‰è¿›æ–¹å‘
+    int speed;       //å‰è¿›é€Ÿåº¦
+    int length;      //é•¿åº¦ï¼ŒåŒ…æ‹¬å¤´
+    int score;       //å¾—åˆ†
+    SnakeBody *next; //è›‡èº«
 };
 
-SnakeHead *head; //ÉßÍ·Ö¸Õë
-SnakeBody *rear; //ÉßÎ²Ö¸Õë
+SnakeHead *head; //è›‡å¤´æŒ‡é’ˆ
+SnakeBody *rear; //è›‡å°¾æŒ‡é’ˆ
 
 FILE *rank;
 
@@ -67,9 +67,9 @@ void updateHighestScore()
     }
 }
 
-int FOOD_X; //Ê³Îï×ø±ê
+int FOOD_X; //é£Ÿç‰©åæ ‡
 int FOOD_Y; //
-bool FOOD;  //µ±Ç°Ê³ÎïÊÇ·ñ´æÔÚ
+bool FOOD;  //å½“å‰é£Ÿç‰©æ˜¯å¦å­˜åœ¨
 
 int selectgamemodenumber()
 {
@@ -80,18 +80,18 @@ int selectgamemodenumber()
 	position.X=COLUMN-1+RAW_X-8;
 	position.Y=ROW/2+RAW_Y-2;
 	SetConsoleCursorPosition(screen_out, position);
-	printf("¡ü¡ıÑ¡Ôñ£¬Enter½øÈëÓÎÏ·"); 
+	printf("â†‘â†“é€‰æ‹©ï¼ŒEnterè¿›å…¥æ¸¸æˆ"); 
 	position.X=COLUMN-1+RAW_X;
 	position.Y=ROW/2+RAW_Y;
 	SetConsoleCursorPosition(screen_out, position);
-	printf("ÌôÕ½Ä£Ê½");
+	printf("æŒ‘æˆ˜æ¨¡å¼");
 	position.Y+=1;
 	SetConsoleCursorPosition(screen_out, position);
-	printf("Î§Ç½Ä£Ê½"); 
+	printf("å›´å¢™æ¨¡å¼"); 
 	position.X-=4;
 	position.Y-=1;
 	SetConsoleCursorPosition(screen_out, position); 
-	printf("¡ú");
+	printf("â†’");
 	modenumber=1;
 	while(true)
 	{
@@ -114,7 +114,7 @@ int selectgamemodenumber()
 					if(modenumber==1)position.Y+=1;
 					else position.Y-=1;
 					SetConsoleCursorPosition(screen_out, position); 
-					printf("¡ú");
+					printf("â†’");
 					if(modenumber==1)
 					modenumber=2;
 					else modenumber=1; 
@@ -127,7 +127,7 @@ int selectgamemodenumber()
 					if(modenumber==2)position.Y-=1;
 					else position.Y+=1;
 					SetConsoleCursorPosition(screen_out, position); 
-					printf("¡ú");
+					printf("â†’");
 					if(modenumber==1)
 					modenumber=2;
 					else modenumber=1; 
@@ -138,38 +138,38 @@ int selectgamemodenumber()
 	}
 }
 
-void initScreen() //Êä³öÒ»¸ö¿ò
+void initScreen() //è¾“å‡ºä¸€ä¸ªæ¡†
 {
-    system("cls");                                  //ÇåÆÁ
-    char wall[4] = "¡õ";                             //Ç½ÓÃ¡õÎ§ÆğÀ´
-    SetConsoleCursorInfo(screen_out, &cursor_info); //ÉèÖÃ¹â±êÊôĞÔ£¬Òş²Ø
-    position.X = -1 + RAW_X;                        //³õÊ¼»¯×ø±ê¼ÓÆ«ÒÆÁ¿
+    system("cls");                                  //æ¸…å±
+    char wall[4] = "â–¡";                             //å¢™ç”¨â–¡å›´èµ·æ¥
+    SetConsoleCursorInfo(screen_out, &cursor_info); //è®¾ç½®å…‰æ ‡å±æ€§ï¼Œéšè—
+    position.X = -1 + RAW_X;                        //åˆå§‹åŒ–åæ ‡åŠ åç§»é‡
     position.Y = 0 + RAW_Y;                         //
-    for (int i = 0; i <= COLUMN; i++)               //ÉÏ
+    for (int i = 0; i <= COLUMN; i++)               //ä¸Š
     {
         SetConsoleCursorPosition(screen_out, position);
         printf(wall);
         position.X += 2;
     }
-    for (int i = 0; i <= ROW; i++) //ÓÒ
+    for (int i = 0; i <= ROW; i++) //å³
     {
         SetConsoleCursorPosition(screen_out, position);
         printf(wall);
         position.Y++;
     }
-    for (int i = 0; i <= COLUMN; i++) //ÏÂ
+    for (int i = 0; i <= COLUMN; i++) //ä¸‹
     {
         SetConsoleCursorPosition(screen_out, position);
         printf(wall);
         position.X -= 2;
     }
-    for (int i = 0; i <= ROW; i++) //×ó
+    for (int i = 0; i <= ROW; i++) //å·¦
     {
         SetConsoleCursorPosition(screen_out, position);
         printf(wall);
         position.Y--;
     }
-    position.X = 2 * COLUMN + 3 + RAW_X; //Êä³öµÃ·ÖÇøÓò
+    position.X = 2 * COLUMN + 3 + RAW_X; //è¾“å‡ºå¾—åˆ†åŒºåŸŸ
     position.Y = 0 + RAW_Y;
     for (int i = 0; i <= 8; i++)
     {
@@ -198,17 +198,17 @@ void initScreen() //Êä³öÒ»¸ö¿ò
     position.X += 2;
     position.Y += (int)ROW / 8 - 1;
     SetConsoleCursorPosition(screen_out, position);
-    printf("    µ±Ç°µÃ·Ö");
+    printf("    å½“å‰å¾—åˆ†");
     position.Y += 2;
     SetConsoleCursorPosition(screen_out, position);
     printf("       00");
     position.Y += 2;
     SetConsoleCursorPosition(screen_out, position);
-    printf("    ÀúÊ·×î¸ß");
+    printf("    å†å²æœ€é«˜");
     position.Y += 2;
     SetConsoleCursorPosition(screen_out, position);
-    printf("       %02d", getHighestScore()); //»ñÈ¡ÀúÊ·×î¸ß·Ö
-    position.X = 2 * COLUMN + 3 + RAW_X;      //Êä³öÌáÊ¾¿ò
+    printf("       %02d", getHighestScore()); //è·å–å†å²æœ€é«˜åˆ†
+    position.X = 2 * COLUMN + 3 + RAW_X;      //è¾“å‡ºæç¤ºæ¡†
     position.Y = (int)ROW / 2 + 1 + RAW_Y;
     for (int i = 0; i <= 8; i++)
     {
@@ -237,33 +237,33 @@ void initScreen() //Êä³öÒ»¸ö¿ò
     position.X += 2;
     position.Y += 2;
     SetConsoleCursorPosition(screen_out, position);
-    printf(" ÈÎÒâ¼ü¿ªÊ¼ÓÎÏ·");
+    printf(" ä»»æ„é”®å¼€å§‹æ¸¸æˆ");
     position.Y += 2;
     SetConsoleCursorPosition(screen_out, position);
-    printf(" ·½Ïò¼ü¿ØÖÆÒÆ¶¯");
+    printf(" æ–¹å‘é”®æ§åˆ¶ç§»åŠ¨");
     position.Y += 2;
     SetConsoleCursorPosition(screen_out, position);
-    printf("'p'ÔİÍ£/·µ»ØÓÎÏ·");
+    printf("'p'æš‚åœ/è¿”å›æ¸¸æˆ");
     position.Y += 2;
     SetConsoleCursorPosition(screen_out, position);
-    printf("  'q'ÍË³öÓÎÏ·");
+    printf("  'q'é€€å‡ºæ¸¸æˆ");
 }
 
-void initSnake(int speed = 200, int length = 4, int raw_x = COLUMN / 2, int raw_y = ROW / 2)	//³õÊ¼»¯Éß 
+void initSnake(int speed = 200, int length = 4, int raw_x = COLUMN / 2, int raw_y = ROW / 2)	//åˆå§‹åŒ–è›‡ 
 {
     SnakeBody *p;
     head = (SnakeHead *)malloc(sizeof(SnakeHead));
     rear = (SnakeBody *)malloc(sizeof(SnakeBody));
-    head->direction = RIGHT; //Ä¬ÈÏÓÒ·½Ïò
-    head->speed = speed;     //Ä¬ÈÏËÙ¶È 1¸ñ/200ºÁÃë
-    head->length = length;   //³õÊ¼³¤¶ÈÎª4
-    head->score = 0;         //µÃ·ÖÎªÁã
-    head->next = rear;       //Ö¸ÏòÏÂÒ»¸ö
-    head->x = raw_x;         //ÉèÖÃ³õÊ¼ÉßÍ·Î»ÖÃ
+    head->direction = RIGHT; //é»˜è®¤å³æ–¹å‘
+    head->speed = speed;     //é»˜è®¤é€Ÿåº¦ 1æ ¼/200æ¯«ç§’
+    head->length = length;   //åˆå§‹é•¿åº¦ä¸º4
+    head->score = 0;         //å¾—åˆ†ä¸ºé›¶
+    head->next = rear;       //æŒ‡å‘ä¸‹ä¸€ä¸ª
+    head->x = raw_x;         //è®¾ç½®åˆå§‹è›‡å¤´ä½ç½®
     head->y = raw_y;         //
-    rear->last = NULL;       //ÖÃ¿Õ
+    rear->last = NULL;       //ç½®ç©º
     rear->next = NULL;       //
-    rear->x = raw_x - 1;     //ÉèÖÃ³õÊ¼Öµ
+    rear->x = raw_x - 1;     //è®¾ç½®åˆå§‹å€¼
     rear->y = raw_y;         //
     for (int i = 0; i <= length - 3; i++)
     {
@@ -278,44 +278,44 @@ void initSnake(int speed = 200, int length = 4, int raw_x = COLUMN / 2, int raw_
     }
 }
 
-void delSnake()			//É¾³ıÉß 
+void delSnake()			//åˆ é™¤è›‡ 
 {
     SnakeBody *p;
-    while (rear != NULL) //É¾³ıÉßÉí
+    while (rear != NULL) //åˆ é™¤è›‡èº«
     {
         p = rear;
         rear = rear->last;
         free(p);
     }
-    free(head); //É¾³ıÉßÍ·
+    free(head); //åˆ é™¤è›‡å¤´
 }
 
 void printSnake()
 {
     SnakeBody *p = head->next;
-    position.X = 2 * head->x - 1 + RAW_X;           //ÉßÍ·×ø±ê¼ÓÆ«ÒÆÁ¿
+    position.X = 2 * head->x - 1 + RAW_X;           //è›‡å¤´åæ ‡åŠ åç§»é‡
     position.Y = head->y + RAW_Y;                   //
-    SetConsoleCursorPosition(screen_out, position); //ÉèÖÃÉßÍ·×ø±ê
-    printf("¡ò");                                    //ÉßÍ·
-    while (p != NULL)                               //Êä³öÉßÉí
+    SetConsoleCursorPosition(screen_out, position); //è®¾ç½®è›‡å¤´åæ ‡
+    printf("â—");                                    //è›‡å¤´
+    while (p != NULL)                               //è¾“å‡ºè›‡èº«
     {
         position.X = 2 * p->x - 1 + RAW_X;
         position.Y = p->y + RAW_Y;
         SetConsoleCursorPosition(screen_out, position);
-        printf("¡ğ");
+        printf("â—‹");
         p = p->next;
     }
 }
 
-void clearSnake(int speed = 0)						//Çå³şÉßÉí 
+void clearSnake(int speed = 0)						//æ¸…æ¥šè›‡èº« 
 {
     SnakeBody *p = head->next;
-    position.X = 2 * head->x - 1 + RAW_X;           //ÉßÍ·×ø±ê¼ÓÆ«ÒÆÁ¿
+    position.X = 2 * head->x - 1 + RAW_X;           //è›‡å¤´åæ ‡åŠ åç§»é‡
     position.Y = head->y + RAW_Y;                   //
-    SetConsoleCursorPosition(screen_out, position); //ÉèÖÃÉßÍ·×ø±ê
-    putchar(' ');                                   //Çå³ıÉßÍ·
+    SetConsoleCursorPosition(screen_out, position); //è®¾ç½®è›‡å¤´åæ ‡
+    putchar(' ');                                   //æ¸…é™¤è›‡å¤´
     putchar(' ');
-    while (p != NULL)                               //Çå³ıÉßÉí
+    while (p != NULL)                               //æ¸…é™¤è›‡èº«
     {
         position.X = 2 * p->x - 1 + RAW_X;
         position.Y = p->y + RAW_Y;
@@ -327,17 +327,17 @@ void clearSnake(int speed = 0)						//Çå³şÉßÉí
     }
 }
 
-void _lengthenSnake() //¼Ó³¤Ò»¸ñÉßÉí
+void _lengthenSnake() //åŠ é•¿ä¸€æ ¼è›‡èº«
 {
     SnakeBody *p = head->next;
-    head->length++;                                      //³¤¶È¼ÓÒ»
-    head->next = (SnakeBody *)malloc(sizeof(SnakeBody)); //½«ÉßÍ·Î»ÖÃ±äÎªÉßÉí
-    head->next->last = NULL;                             //³õÊ¼»¯ĞÂÉßÉí
+    head->length++;                                      //é•¿åº¦åŠ ä¸€
+    head->next = (SnakeBody *)malloc(sizeof(SnakeBody)); //å°†è›‡å¤´ä½ç½®å˜ä¸ºè›‡èº«
+    head->next->last = NULL;                             //åˆå§‹åŒ–æ–°è›‡èº«
     head->next->x = head->x;                             //
     head->next->y = head->y;                             //
-    head->next->next = p;                                //Á¬½ÓÔ­ÉßÉí
+    head->next->next = p;                                //è¿æ¥åŸè›‡èº«
     p->last = head->next;                                //
-    switch (head->direction)                             //¸ü¸ÄÉßÍ·×ø±ê
+    switch (head->direction)                             //æ›´æ”¹è›‡å¤´åæ ‡
     {
     case UP:
         head->y = ((head->y - 2 + ROW) % ROW) + 1;
@@ -354,7 +354,7 @@ void _lengthenSnake() //¼Ó³¤Ò»¸ñÉßÉí
     }
 }
 
-void updateScore()	//¸üĞÂ·ÖÊı 
+void updateScore()	//æ›´æ–°åˆ†æ•° 
 {
     position.X = 2 * COLUMN + 5 + RAW_X;
     position.Y = 2 + (int)ROW / 8 - 1 + RAW_Y;
@@ -366,13 +366,13 @@ void _moveSnake()
 {
     _lengthenSnake();
     head->length--;
-    SnakeBody *p = rear; //É¾³ıÔ­ÉßÎ²
-    rear = rear->last;   //Î²Ö¸ÕëÇ°ÒÆ
-    rear->next = NULL;   //ÖÃ¿Õ
+    SnakeBody *p = rear; //åˆ é™¤åŸè›‡å°¾
+    rear = rear->last;   //å°¾æŒ‡é’ˆå‰ç§»
+    rear->next = NULL;   //ç½®ç©º
     free(p);
 }
 
-void changeDirection(char direction) //¸Ä±äÉßÍ··½Ïò
+void changeDirection(char direction) //æ”¹å˜è›‡å¤´æ–¹å‘
 {
     switch (direction)
     {
@@ -403,24 +403,24 @@ void changeDirection(char direction) //¸Ä±äÉßÍ··½Ïò
     }
 }
 
-void createFood() //´´½¨Ëæ»úÊ³Îï
+void createFood() //åˆ›å»ºéšæœºé£Ÿç‰©
 {
-    srand(time(NULL)); //ÉèÖÃËæ»úÖÖ×Ó
+    srand(time(NULL)); //è®¾ç½®éšæœºç§å­
     SnakeBody *p;
     SnakeHead *p1;
-    bool flag = true; //ÊÇ·ñËæ»ú³É¹¦
+    bool flag = true; //æ˜¯å¦éšæœºæˆåŠŸ
     while (flag)
     {
         flag = false;
-        FOOD_X = random(COLUMN); //²úÉúËæ»úÊı[1,COLUMN]
-        FOOD_Y = random(ROW);    //²úÉúËæ»úÊı[1,ROW]
+        FOOD_X = random(COLUMN); //äº§ç”Ÿéšæœºæ•°[1,COLUMN]
+        FOOD_Y = random(ROW);    //äº§ç”Ÿéšæœºæ•°[1,ROW]
         p = head->next;
-        if (FOOD_X == head->x && FOOD_Y == head->y) //ÅĞ¶ÏÊÇ·ñÓëÉßÍ·ÖØºÏ
+        if (FOOD_X == head->x && FOOD_Y == head->y) //åˆ¤æ–­æ˜¯å¦ä¸è›‡å¤´é‡åˆ
         {
             flag = true;
             continue;
         }
-        while (p != NULL) //ÅĞ¶ÏÊÇ·ñÓëÉßÉíÖØºÏ
+        while (p != NULL) //åˆ¤æ–­æ˜¯å¦ä¸è›‡èº«é‡åˆ
         {
             if (FOOD_X == p->x && FOOD_Y == p->y)
             {
@@ -451,15 +451,15 @@ void createFood() //´´½¨Ëæ»úÊ³Îï
         	FOOD_Y=(p1->y)%ROW+1;
     	}*/ 
     }
-    position.X = 2 * FOOD_X - 1 + RAW_X; //ÉèÖÃ¹â±êÎ»ÖÃ
+    position.X = 2 * FOOD_X - 1 + RAW_X; //è®¾ç½®å…‰æ ‡ä½ç½®
     position.Y = FOOD_Y + RAW_Y;
     SetConsoleCursorPosition(screen_out, position);
-    printf("¡ô"); //Êä³öÊ³Îï
-    FOOD = true; //µ±Ç°Ê³Îï´æÔÚ
+    printf("â—†"); //è¾“å‡ºé£Ÿç‰©
+    FOOD = true; //å½“å‰é£Ÿç‰©å­˜åœ¨
 }
 
 
-bool eatSnakeBody() //ÏÂÒ»¸öÊÇ·ñÎªÉßÉí
+bool eatSnakeBody() //ä¸‹ä¸€ä¸ªæ˜¯å¦ä¸ºè›‡èº«
 {
     int next_x;
     int next_y;
@@ -494,7 +494,7 @@ bool eatSnakeBody() //ÏÂÒ»¸öÊÇ·ñÎªÉßÉí
     return false;
 }
 
-bool eatWall() //ÊÇ·ñ×²Ç½
+bool eatWall() //æ˜¯å¦æ’å¢™
 {
      int next_x;
      int next_y;
@@ -537,7 +537,7 @@ bool eatWall() //ÊÇ·ñ×²Ç½
      return false;
 }
 
-bool eatFood() //ÏÂÒ»¸öÊÇ·ñÎªÊ³Îï
+bool eatFood() //ä¸‹ä¸€ä¸ªæ˜¯å¦ä¸ºé£Ÿç‰©
 {
     int next_x;
     int next_y;
@@ -568,46 +568,46 @@ bool eatFood() //ÏÂÒ»¸öÊÇ·ñÎªÊ³Îï
     return false;
 }
 
-void autoMoveSnake1() //ÆÕÍ¨ÒÆ¶¯
+void autoMoveSnake1() //æ™®é€šç§»åŠ¨
 {
-    position.X = 2 * rear->x - 1 + RAW_X;           //Çå³ıÉßÎ²
+    position.X = 2 * rear->x - 1 + RAW_X;           //æ¸…é™¤è›‡å°¾
     position.Y = rear->y + RAW_Y;                   //
     SetConsoleCursorPosition(screen_out, position); //
     putchar(' ');                                   //
     putchar(' ');
-    position.X = 2 * head->x - 1 + RAW_X;           //¸ü¸ÄÔ­ÉßÍ··ûºÅ
+    position.X = 2 * head->x - 1 + RAW_X;           //æ›´æ”¹åŸè›‡å¤´ç¬¦å·
     position.Y = head->y + RAW_Y;                   //
     SetConsoleCursorPosition(screen_out, position); //
-    printf("¡ğ");                                    //
-    _moveSnake();                                   //ÒÆ¶¯
-    position.X = 2 * head->x - 1 + RAW_X;           //Êä³öĞÂÉßÍ·
+    printf("â—‹");                                    //
+    _moveSnake();                                   //ç§»åŠ¨
+    position.X = 2 * head->x - 1 + RAW_X;           //è¾“å‡ºæ–°è›‡å¤´
     position.Y = head->y + RAW_Y;                   //
     SetConsoleCursorPosition(screen_out, position); //
-    printf("¡ò");                                    //
-    Sleep(head->speed);                             //¿ØÖÆËÙ¶È
+    printf("â—");                                    //
+    Sleep(head->speed);                             //æ§åˆ¶é€Ÿåº¦
 }
 
-void autoMoveSnake2() //³ÔÊ³ÎïÒÆ¶¯
+void autoMoveSnake2() //åƒé£Ÿç‰©ç§»åŠ¨
 {
-    FOOD = false;                                   //Ê³ÎïÖÃfalse
-    head->score++;                                  //µÃ·Ö¼ÓÒ»
-    position.X = 2 * head->x - 1 + RAW_X;           //¸ü¸ÄÔ­ÉßÍ··ûºÅ
+    FOOD = false;                                   //é£Ÿç‰©ç½®false
+    head->score++;                                  //å¾—åˆ†åŠ ä¸€
+    position.X = 2 * head->x - 1 + RAW_X;           //æ›´æ”¹åŸè›‡å¤´ç¬¦å·
     position.Y = head->y + RAW_Y;                   //
     SetConsoleCursorPosition(screen_out, position); //
-    printf("¡ğ");                                    //
-    _lengthenSnake();                               //Ôö¼ÓÒ»½ØÉßÉí
-    position.X = 2 * head->x - 1 + RAW_X;           //Êä³öĞÂÉßÍ·
+    printf("â—‹");                                    //
+    _lengthenSnake();                               //å¢åŠ ä¸€æˆªè›‡èº«
+    position.X = 2 * head->x - 1 + RAW_X;           //è¾“å‡ºæ–°è›‡å¤´
     position.Y = head->y + RAW_Y;                   //
     SetConsoleCursorPosition(screen_out, position); //
-    printf("¡ò");                                    //
-    Sleep(head->speed);                             //¿ØÖÆËÙ¶È
+    printf("â—");                                    //
+    Sleep(head->speed);                             //æ§åˆ¶é€Ÿåº¦
 }
 
-void GameMode(int gamemodenumber) //¿ªÊ¼ÓÎÏ· 
+void GameMode(int gamemodenumber) //å¼€å§‹æ¸¸æˆ 
 {
     char key;
     bool pause_game = false;
-    FOOD = false; //³õÊ¼Ã»ÓĞÊ³Îï
+    FOOD = false; //åˆå§‹æ²¡æœ‰é£Ÿç‰©
     while (true)
     {
         SetConsoleCursorInfo(screen_out, &cursor_info);
@@ -624,7 +624,7 @@ void GameMode(int gamemodenumber) //¿ªÊ¼ÓÎÏ·
                 fflush(stdin);
                 break;
             }
-            else if (key == 'p') //ÔİÍ£¹¦ÄÜ
+            else if (key == 'p') //æš‚åœåŠŸèƒ½
             {
                 position.X = 2 * COLUMN + 5 + RAW_X;
                 position.Y = (int)ROW / 2 + 11 + RAW_Y;
@@ -636,7 +636,7 @@ void GameMode(int gamemodenumber) //¿ªÊ¼ÓÎÏ·
                 }
                 else
                 {
-                    printf("    ÔİÍ£ÖĞ...");
+                    printf("    æš‚åœä¸­...");
                     pause_game = true;
                 }
                 fflush(stdin);
@@ -659,7 +659,7 @@ void GameMode(int gamemodenumber) //¿ªÊ¼ÓÎÏ·
         		{
 	        		Sleep(500);
 	                clearSnake(50);
-	                updateHighestScore(); //¸üĞÂÀúÊ·×î¸ß·Ö
+	                updateHighestScore(); //æ›´æ–°å†å²æœ€é«˜åˆ†
 	                break;	
 				}
 			}
@@ -668,14 +668,14 @@ void GameMode(int gamemodenumber) //¿ªÊ¼ÓÎÏ·
             {
                 Sleep(500);
                 clearSnake(50);
-                updateHighestScore(); //¸üĞÂÀúÊ·×î¸ß·Ö
+                updateHighestScore(); //æ›´æ–°å†å²æœ€é«˜åˆ†
                 break;
             }
             else if (eatFood())
             {
                 autoMoveSnake2();
                 updateScore();
-                if (head->speed > 20) //³ÔÒ»¸öÊ³Îï¾Í¼ÓËÙ
+                if (head->speed > 20) //åƒä¸€ä¸ªé£Ÿç‰©å°±åŠ é€Ÿ
                 {
                     head->speed -= 3;
                 }
@@ -690,8 +690,8 @@ void GameMode(int gamemodenumber) //¿ªÊ¼ÓÎÏ·
 
 void mainLoopSnake()
 {
-    system("chcp 936"); //±£Ö¤²»ÂÒÂë
-    system("color 0b"); //ÑÕÉ«
+    system("chcp 936"); //ä¿è¯ä¸ä¹±ç 
+    system("color 0b"); //é¢œè‰²
     char key;
     while (true)
     {
@@ -700,18 +700,18 @@ void mainLoopSnake()
         initSnake();
         printSnake();
         getch();
-        GameMode(gamemodenumber);		//ÓÎÏ·¿ªÊ¼ 
+        GameMode(gamemodenumber);		//æ¸¸æˆå¼€å§‹ 
         delSnake();
         position.X = (int)COLUMN * 4 / 5 - 2 + RAW_X;
         position.Y = (int)ROW / 2 - 1 + RAW_Y;
         SetConsoleCursorPosition(screen_out, position);
-        printf("  ÓÎÏ·½áÊø...");
+        printf("  æ¸¸æˆç»“æŸ...");
         position.Y += 2;
         SetConsoleCursorPosition(screen_out, position);
-        printf("'r'¿ªÊ¼ĞÂµÄÒ»¾Ö...");
+        printf("'r'å¼€å§‹æ–°çš„ä¸€å±€...");
         position.Y += 2;
         SetConsoleCursorPosition(screen_out, position);
-        printf(" 'q'ÍË³öÓÎÏ·...");
+        printf(" 'q'é€€å‡ºæ¸¸æˆ...");
         key = '\0';
         while (key != 'r' && key != 'q')
         {
