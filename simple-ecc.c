@@ -204,7 +204,7 @@ int64_t compute_ptrank(const EC* ec, const EccPoint* pt)
 void print_points(EC* ec)
 {
     printf("EC: { a = %lld, b = %lld, p = %lld }\n", ec->a, ec->b, ec->p);
-    if (4 * ec->a * ec->a * ec->a + 27 * ec->b * ec->b == 0)
+    if (modp(4 * ec->a * ec->a * ec->a + 27 * ec->b * ec->b, ec->p) == 0)
     {
         printf("Params Invalid!\n");
         return;
