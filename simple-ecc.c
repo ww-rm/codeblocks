@@ -273,15 +273,15 @@ void encrypt_blk(
 )
 {
     int64_t rndk = 0;
-    EccPoint x2 = { 0 };
+    EccPoint x1 = { 0 };
     do
     {
         rndk = rand() % (ecdlp->genpt.n - 1) + 1;
-        mulpt(&ecdlp->ec, rndk, pubkey, &x2);
-    } while (x2.x == 0);
+        mulpt(&ecdlp->ec, rndk, pubkey, &x1);
+    } while (x1.x == 0);
 
     mulpt(&ecdlp->ec, rndk, &ecdlp->genpt.pt, cipher_pt);
-    *cipher = (plain * x2.x) % ecdlp->genpt.n;
+    *cipher = (plain * x1.x) % ecdlp->genpt.n;
 
     return;
 }
@@ -293,9 +293,9 @@ void decrypt_blk(
     int64_t* plain
 )
 {
-    EccPoint x2 = { 0 };
-    mulpt(&ecdlp->ec, prikey, cipher_pt, &x2);
-    *plain = (cipher * inverse(x2.x, ecdlp->genpt.n)) % ecdlp->genpt.n;
+    EccPoint x1 = { 0 };
+    mulpt(&ecdlp->ec, prikey, cipher_pt, &x1);
+    *plain = (cipher * inverse(x1.x, ecdlp->genpt.n)) % ecdlp->genpt.n;
 
     return;
 }
