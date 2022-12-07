@@ -82,14 +82,14 @@ void addpt(
 
         if (pt1->x == pt2->x)
         {
-            // ÁãÔª
+            // Unit
             if (pt1->y + pt2->y == ec->p)
             {
                 new_pt->x = -1;
                 new_pt->y = -1;
                 return;
             }
-            // ÏàÍ¬
+            // Same
             else if (pt1->y == pt2->y)
             {
                 lambda = (3 * pt1->x * pt1->x + ec->a) * inverse(2 * pt1->y, ec->p);
@@ -99,7 +99,7 @@ void addpt(
                 exit(-1);
             }
         }
-        // ²»Í¬
+        // Different
         else
         {
             int64_t delta_x = 0;
