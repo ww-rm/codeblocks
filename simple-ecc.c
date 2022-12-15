@@ -128,47 +128,18 @@ void mulpt(
     EccPoint* new_pt
 )
 {
-    if (k == 0)
-    {
-        new_pt->x = -1;
-        new_pt->y = -1;
-        return;
-    }
+    new_pt->x = -1;
+    new_pt->y = -1;
 
-    int i = 64;
-    // find first 1 bit
-    while (!(k & 0x8000000000000000))
+    for (int i = 0; i < 64; i++)
     {
-        k <<= 1;
-        i--;
-    }
-
-    EccPoint ret = { pt->x, pt->y };
-    EccPoint misc = { pt->x, pt->y };
-
-    k <<= 1;
-    i--;
-    while (i > 0)
-    {
-        addpt(ec, &ret, &ret, &ret);
+        addpt(ec, new_pt, new_pt, new_pt);
         if (k & 0x8000000000000000)
         {
-            addpt(ec, &ret, pt, &ret);
-        }
-        else
-        {
-            addpt(ec, &ret, pt, &misc);
+            addpt(ec, new_pt, pt, new_pt);
         }
         k <<= 1;
-        i--;
     }
-
-    if (&ret && &misc)
-    {
-        new_pt->x = ret.x;
-        new_pt->y = ret.y;
-    }
-
     return;
 }
 
