@@ -21,15 +21,12 @@ class BTNode:
         if self.__next_child_idx >= self.children_count:
             return None
         child = self.children[self.__next_child_idx]
+        child.__next_child_idx = 0
         self.__next_child_idx += 1
         return child
 
-    @next_child.setter
-    def next_child(self, idx: int):
-        self.__next_child_idx = idx
-
     def __init__(self) -> None:
-        self.next_child = 0
+        self.__next_child_idx = 0
 
     def get_children(self) -> List["BTNode"]:
         return []
@@ -66,7 +63,6 @@ class Backtracker:
             # forward
             else:
                 if not self.needprune(nodes, child):
-                    child.next_child = 0
                     nodes.append(child)
 
 
