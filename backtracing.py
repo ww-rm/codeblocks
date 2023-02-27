@@ -21,7 +21,6 @@ class BTNode:
         if self.__next_child_idx >= self.children_count:
             return None
         child = self.children[self.__next_child_idx]
-        child.__next_child_idx = 0
         self.__next_child_idx += 1
         return child
 
