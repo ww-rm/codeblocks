@@ -31,3 +31,4 @@ void GetAffineMatrix(
 
     m->SetElements((REAL)m11, (REAL)m12, (REAL)m21, (REAL)m22, (REAL)dx, (REAL)dy);
 }
+
