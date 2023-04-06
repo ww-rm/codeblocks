@@ -21,11 +21,11 @@ void GetAffineMatrix(
     double u23 = u2 - u3;
     double v23 = v2 - v3;
 
-    double det_uv = (u12 * v23 - v12 * u23);
-    double m11    = (x12 * v23 - v12 * x23) / det_uv;
-    double m12    = (y12 * v23 - v12 * y23) / det_uv;
-    double m21    = (u12 * x23 - x12 * u23) / det_uv;
-    double m22    = (u12 * y23 - y12 * u23) / det_uv;
+    double invdet = 1.0000 / (u12 * v23 - v12 * u23);
+    double m11    = invdet * (x12 * v23 - v12 * x23);
+    double m12    = invdet * (y12 * v23 - v12 * y23);
+    double m21    = invdet * (u12 * x23 - x12 * u23);
+    double m22    = invdet * (u12 * y23 - y12 * u23);
     double dx     = x1 - m11 * u1 - m21 * v1;
     double dy     = y1 - m12 * u1 - m22 * v1;
 
